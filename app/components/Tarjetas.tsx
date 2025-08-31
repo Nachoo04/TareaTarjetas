@@ -26,7 +26,6 @@ function Card({
       style={({ pressed }) => [
         styles.card,
         selected ? styles.cardActive : styles.cardInactive,
-        pressed && styles.cardPressed,
       ]}
     >
       <Text style={styles.cardText}>{item.title}</Text>
@@ -35,29 +34,23 @@ function Card({
 }
 
 export default function TarjetaProp() {
-  const [tarjetasPresionadas, setTarjeta] = useState<Set<string>>(new Set());
+  const [tarjetasPresionadas, setTarjetasPresionadas] = useState<string[]>([]);
 
   const toggleSelection = (id: string) => {
-    setTarjeta((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-      }
-      return newSet;
-    });
+    setTarjetasPresionadas(prev =>
+      prev.includes(id) ? prev.filter(item => item !== id): [...prev,id]);
   };
 
   const renderItem = useCallback(
     ({ item }: { item: Item }) => (
       <Card
         item={item}
-        selected={tarjetasPresionadas.has(item.id)}
-        onPress={() => toggleSelection(item.id)}
+        selected={tarjetasPresionadas.includes(item.id)}
+        onPress={() => {setTarjetasPresionadas(prev =>
+      prev.includes(item.id) ? prev.filter(id => id !== item.id): [...prev,item.id]);}}
       />
     ),
-    [tarjetasPresionadas]
+    [tarjetasPresionadas, toggleSelection]
   );
 
   return (
@@ -84,14 +77,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 10,
     elevation: 2,
   },
   cardInactive: { backgroundColor: "#0231ffff" },
   cardActive: { backgroundColor: "#133B44" },
-  cardPressed: { transform: [{ scale: 0.98 }] },
   cardText: { color: "#fff", fontSize: 16, fontWeight: "600" },
 });
