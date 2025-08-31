@@ -46,11 +46,10 @@ export default function TarjetaProp() {
       <Card
         item={item}
         selected={tarjetasPresionadas.includes(item.id)}
-        onPress={() => {setTarjetasPresionadas(prev =>
-      prev.includes(item.id) ? prev.filter(id => id !== item.id): [...prev,item.id]);}}
+        onPress={() => toggleSelection(item.id)}
       />
     ),
-    [tarjetasPresionadas, toggleSelection]
+    [tarjetasPresionadas]
   );
 
   return (
