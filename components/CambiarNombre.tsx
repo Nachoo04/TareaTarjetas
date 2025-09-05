@@ -10,7 +10,7 @@ import {
 
 type Persona = { nombre: string; apellido: string };
 
-const TextInputExample = () => {
+const CambiarDatos= () => {
   const [persona, setPersona] = useState<Persona>({ nombre: "", apellido: "" });
 
   const [isOpen, setIsOpen] = useState(false);
@@ -132,4 +132,4 @@ const styles = StyleSheet.create({
   textoBoton: { color: "#fff", fontWeight: "700" },
 });
 
-export default TextInputExample;
+export default CambiarDatos;
