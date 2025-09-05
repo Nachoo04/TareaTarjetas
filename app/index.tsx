@@ -1,4 +1,4 @@
-import TarjetasProp from "@/app/components/Tarjetas";
+import TarjetasProp from "@/components/Tarjetas";
 import { View } from "react-native";
 
 export default function Index() {
