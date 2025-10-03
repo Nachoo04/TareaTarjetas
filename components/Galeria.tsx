@@ -25,14 +25,13 @@ export default function Galeria() {
   const [error, setError] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
 
-  // cargar desde backend
+
   useEffect(() => {
     let alive = true;
     (async () => {
       try {
         setLoading(true);
         const products: ProductDTO[] = await getProducts();
-        if (!alive) return;
         const items: Item[] = products.map((p) => ({
           id: p.id,
           title: p.title,

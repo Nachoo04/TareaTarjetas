@@ -1,17 +1,15 @@
-import React, { useMemo, useState } from "react";
-import {
-  Modal,
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Pressable,
-  KeyboardAvoidingView,
-  Platform,
-  ActivityIndicator,
-  ImageSourcePropType,
-} from "react-native";
 import { createProduct } from "@/services/api";
+import React, { useState } from "react";
+import {
+    ActivityIndicator,
+    ImageSourcePropType,
+    Modal,
+    Pressable,
+    StyleSheet,
+    Text,
+    TextInput,
+    View
+} from "react-native";
 
 type Props = {
   visible: boolean;
@@ -29,7 +27,6 @@ export default function CreateProductModal({ visible, onClose, onCreated }: Prop
   const [imageUrl, setImageUrl] = useState("");
   const [price, setPrice] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
 
 
@@ -37,7 +34,6 @@ export default function CreateProductModal({ visible, onClose, onCreated }: Prop
     setTitle("");
     setImageUrl("");
     setPrice("");
-    setError(null);
     setSubmitting(false);
   };
 
@@ -49,7 +45,6 @@ export default function CreateProductModal({ visible, onClose, onCreated }: Prop
 
   const handleSubmit = async () => {;
     setSubmitting(true);
-    setError(null);
     const payload = {
         title: title.trim(),
         image: imageUrl.trim(),
@@ -70,9 +65,8 @@ export default function CreateProductModal({ visible, onClose, onCreated }: Prop
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={handleClose}>
-      <KeyboardAvoidingView
+      <View
         style={styles.overlay}
-        behavior={Platform.select({ ios: "padding", android: undefined })}
       >
         <View style={styles.card}>
           <Text style={styles.title}>Nuevo producto</Text>
@@ -94,8 +88,6 @@ export default function CreateProductModal({ visible, onClose, onCreated }: Prop
             placeholder="https://…"
             placeholderTextColor="#888"
             style={styles.input}
-            autoCapitalize="none"
-            autoCorrect={false}
           />
 
           <Text style={styles.label}>Precio</Text>
@@ -105,7 +97,6 @@ export default function CreateProductModal({ visible, onClose, onCreated }: Prop
             placeholder="0.00"
             placeholderTextColor="#888"
             style={styles.input}
-            keyboardType="decimal-pad"
           />
 
 
@@ -126,7 +117,7 @@ export default function CreateProductModal({ visible, onClose, onCreated }: Prop
             </Pressable>
           </View>
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 }
