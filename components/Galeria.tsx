@@ -1,7 +1,7 @@
 import Card from "@/components/Card";
 import CreateProductModal from "@/components/CrearProducto";
 import GaleriaModal from "@/components/GaleriaModal";
-import { getProducts, type ProductDTO } from "@/services/api";
+import { getProducts, type ProductoExportado } from "@/services/api";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Button,
@@ -31,7 +31,7 @@ export default function Galeria() {
     (async () => {
       try {
         setLoading(true);
-        const products: ProductDTO[] = await getProducts();
+        const products: ProductoExportado[] = await getProducts();
         const items: Item[] = products.map((p) => ({
           id: p.id,
           title: p.title,

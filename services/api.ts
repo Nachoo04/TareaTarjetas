@@ -1,19 +1,19 @@
 import { BASE_URL } from "../config/ip_config";
 
-export type ProductDTO = {
+export type ProductoExportado = {
   id: string;
   title: string;
   image: string;   
   price: number;
 };
 
-export async function getProducts(): Promise<ProductDTO[]> {
+export async function getProducts(): Promise<ProductoExportado[]> {
   const r = await fetch(`${BASE_URL}/products`);
   if (!r.ok) throw new Error(`GET /products ${r.status}`);
   return r.json();
 }
 
-export async function createProduct(body: Omit<ProductDTO, "id">): Promise<ProductDTO> {
+export async function createProduct(body: Omit<ProductoExportado, "id">): Promise<ProductoExportado> {
   const r = await fetch(`${BASE_URL}/products`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
