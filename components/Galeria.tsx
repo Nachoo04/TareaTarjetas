@@ -1,16 +1,17 @@
 import Card from "@/components/Card";
+import CreateProductModal from "@/components/CrearProducto";
 import GaleriaModal from "@/components/GaleriaModal";
+import { getProducts, type ProductDTO } from "@/services/api";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Button,
   FlatList,
   ImageSourcePropType,
   StyleSheet,
   Text,
   TextInput,
   View,
-  Button,
 } from "react-native";
-import { getProducts, createProduct, type ProductDTO } from "@/services/api";
 
 type Item = { id: string; title: string; image: ImageSourcePropType; price: number };
 
@@ -22,6 +23,7 @@ export default function Galeria() {
   const [data, setData] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showCreate, setShowCreate] = useState(false);
 
   // cargar desde backend
   useEffect(() => {
@@ -31,10 +33,10 @@ export default function Galeria() {
         setLoading(true);
         const products: ProductDTO[] = await getProducts();
         if (!alive) return;
-        const items: Item[] = products.map(p => ({
+        const items: Item[] = products.map((p) => ({
           id: p.id,
           title: p.title,
-          image: { uri: p.image }, // 👈 adaptación
+          image: { uri: p.image },
           price: p.price,
         }));
         setData(items);
@@ -45,17 +47,19 @@ export default function Galeria() {
         alive && setLoading(false);
       }
     })();
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, []);
 
   const filteredData = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return data;
-    return data.filter(it => it.title.toLowerCase().includes(q));
+    return data.filter((it) => it.title.toLowerCase().includes(q));
   }, [query, data]);
 
   const toggleFavorite = (id: string) =>
-    setFavoritos(prev => {
+    setFavoritos((prev) => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
       return next;
@@ -74,21 +78,6 @@ export default function Galeria() {
   );
 
   const closeModal = () => setSelectedItem(null);
-
-  // opcional: botón para crear 1 item de prueba en el backend
-  const crearDummy = async () => {
-    try {
-      const p = await createProduct({
-        title: "Producto demo",
-        image: "https://picsum.photos/seed/demo/800/600",
-        price: Number((Math.random() * 100 + 10).toFixed(2)),
-      });
-      // sumarlo al estado local
-      setData(curr => [{ id: p.id, title: p.title, image: { uri: p.image }, price: p.price }, ...curr]);
-    } catch (e: any) {
-      setError(e?.message ?? "Error al crear");
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -111,6 +100,7 @@ export default function Galeria() {
               autoCapitalize="none"
               clearButtonMode="while-editing"
             />
+
             {loading ? (
               <Text style={styles.resultsText}>Cargando…</Text>
             ) : error ? (
@@ -118,8 +108,9 @@ export default function Galeria() {
             ) : query ? (
               <Text style={styles.resultsText}>{filteredData.length} resultados</Text>
             ) : null}
+
             <View style={{ marginTop: 8 }}>
-              <Button title="Crear producto demo" onPress={crearDummy} />
+              <Button title="Nuevo producto" onPress={() => setShowCreate(true)} />
             </View>
           </View>
         }
@@ -131,6 +122,14 @@ export default function Galeria() {
         mode={mode}
         cambiarModo={setMode}
         cerrarModal={closeModal}
+      />
+
+      <CreateProductModal
+        visible={showCreate}
+        onClose={() => setShowCreate(false)}
+        onCreated={(created: any) => {
+          setData((curr) => [created, ...curr]);
+        }}
       />
     </View>
   );
